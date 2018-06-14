@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Test web</title>
+<script type="text/javascript" src="/js/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" src="/js/datatables.min.js"></script>
+<script type="text/javascript" src="/js/bootstrap.min.js"></script>
+
+<link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="/css/datatables.min.css">
+</head>
+<script type="text/javascript">
+	$(document).ready(function() {
+		findAll();
+
+
+
+		$('#btnAdd').on("click", function() {
+			rowId = "";
+			$('#myModal').modal();
+			$('#modalHeader').html("Add Data");
+			$("#txtId").prop("readonly", false);
+			$('#txtId').val("");
+			$('#txtName').val("");
+			$('#txtLastName').val("");
+			setTimeout(function(){
+	            $("#txtId").focus();
+	        }, 200);
+		});
+		
+
+		$('#btnSave').on("click", function() {
+
+			var id = $('#txtId').val();
+			var name = $('#txtName').val();
+			var last = $('#txtLastName').val();
+			
+			$.ajax({
+				url : "/save?id="+id+"&name="+name+"&last="+last+"",
+				type : "GET",
+				data : {},
+				success : function(response) {
+					console.log(response);
+					findAll();
+					$('#myModal').modal('hide');
+				}
+			});
+		});
+	});
+
+
+	
+
+	function editdata(data){
+		$.ajax({
+			url : "/find?id="+data,
+			type : "GET",
+			data : {},
+			success : function(response) {
+				console.log(response);
+				$('#myModal').modal();
+				$('#modalHeader').html("Edit Data");
+				$("#txtId").prop("readonly", true);
+				$('#txtId').val(response.value.id);
+				$('#txtName').val(response.value.firstName);
+				$('#txtLastName').val(response.value.lastName);
+				setTimeout(function(){
+		            $("#txtName").focus();
+		        }, 200);
+			}
+		});
+	}
+	
+	function deletedata(data){
+		$.ajax({
+			url : "/delete?id="+data,
+			type : "GET",
+			data : {},
+			success : function(response) {
+				console.log(response);
+				findAll();
+			}
+		});
+	}
+	
+	
+	function findAll(){
+		$.ajax({
+			url : "/findall",
+			type : "GET",
+			data : {},
+			success : function(response) {
+				console.log(response);
+				setToTable(response);
+			}
+		});
+	}
+	
+	function setToTable(myJson) {
+		$('#myTable').DataTable().destroy();
+		$('#myTable')
+				.DataTable(
+						{
+							responsive: true,
+							data : myJson,
+							columns : [
+									{
+										mData : null,
+										bSortable : true,
+										mRender : function(data) {
+											return '<left>' + data.id + '</left>';
+										}
+									},
+									{
+										mData : null,
+										bSortable : false,
+										mRender : function(data) {
+											return '<left>' + data.firstName + '</left>';
+										}
+									},
+									{
+										mData : null,
+										bSortable : false,
+										mRender : function(data) {
+											return '<left>' + data.lastName + '</left>';
+										}
+									},
+									{
+										mData : null,
+										bSortable : false,
+										mRender : function(data) {
+											//addBtnEdit(data.id);
+											return '<div id="btnEdit'+data.id+'" align="center"><a href="javascript:editdata('+data.id+');"><button type="button" class="btn btn-warning">Edit</button></a></div>';
+										}
+									},
+									{
+										mData : null,
+										bSortable : false,
+										mRender : function(data) {
+											//addBtnDelete(data.id);
+											return '<div id="btnDelete'+data.id+'" align="center"><a href="javascript:deletedata('+data.id+');"><button type="button" class="btn btn-danger">Delete</button></a></div>';
+										}
+									}
+
+
+									 ]
+						});
+	}
+
+
+	
+	
+</script>
+<body>
+	<div class="row">
+		<div class="col-md-12">
+			<table id="myTable" class="table table-striped nowrap"
+				cellspacing="0" width="100%">
+				<thead class="thead-dark">
+					<tr>
+						<!-- <td align="center">Category Code</td> -->
+						<td align="center">ID</td>
+						<td align="center">First Name</td>
+						<td align="center">Last Name</td>
+						<td align="center">Edit</td>
+						<td align="center">Delete</td>
+					</tr>
+				</thead>
+				<tbody id="bodyResultTable">
+
+				</tbody>
+			</table>
+			<div class="row">
+			<div class="col-md-12" align="center">
+				<a href="#" id="btnAdd" class="btn btn-primary"
+					style="width: 120px;"><i class="fas fa-plus "></i> Add Data</a>
+			</div>
+		</div>
+		</div>
+	</div>
+	
+	
+	<div class="modal fade" id="myModal">
+		<div class="modal-dialog modal modal-dialog-centered">
+			<div class="modal-content">
+
+				<!-- Modal Header -->
+				<div class="modal-header text-white bg-primary">
+					<i class="fas fa-archive icon-2x"></i> &nbsp;&nbsp;
+					<h4 id="modalHeader" class="modal-title">Modal Section</h4>
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+				</div>
+				<!-- Modal body -->
+				<div class="modal-body">
+					<div class="form-group row">
+						<label class="col-sm-3 col-form-label"><center>Id</center></label>
+						<div class="col-8">
+							<input type="text" class="form-control" id="txtId"
+								placeholder="ID" />
+						</div>
+						<div class="col-1"></div>
+					</div>
+					<div class="form-group row">
+						<label class="col-sm-3 col-form-label"><center>Name</center></label>
+						<div class="col-8">
+							<input type="text" class="form-control" id="txtName"
+								placeholder="Name" />
+						</div>
+						<div class="col-1"></div>
+					</div>
+					<div class="form-group row">
+						<label class="col-sm-3 col-form-label"><center>Lastname</center></label>
+						<div class="col-8">
+							<input type="text" class="form-control" id="txtLastName"
+								placeholder="LastName" />
+						</div>
+						<div class="col-1"></div>
+					</div>
+				</div>
+				<!-- Modal footer -->
+				<div class="modal-footer">
+					<a href="#" id="btnSave" class="btn btn-primary"
+						style="width: 120px;"><i class="fas fa-database"></i> Save</a> <a
+						href="#" id="btnClose" class="btn btn-primary"
+						style="width: 120px;" data-dismiss="modal"><i
+						class="fas fa-times"></i> Close</a>
+				</div>
+
+			</div>
+		</div>
+	</div>
+	
+	
+</body>
+</html>

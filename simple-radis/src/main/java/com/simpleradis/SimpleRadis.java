@@ -1,0 +1,1 @@
+package com.simpleradis;import org.springframework.boot.SpringApplication;import org.springframework.boot.autoconfigure.SpringBootApplication;@SpringBootApplicationpublic class SimpleRadis {	public static void main(String[] args) {		SpringApplication.run(SimpleRadis.class, args);	}}
