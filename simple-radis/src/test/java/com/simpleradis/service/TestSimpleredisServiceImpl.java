@@ -2,9 +2,11 @@ package com.simpleradis.service;
 
 import com.simpleradis.config.SimpleredisAppConfig;
 import com.simpleradis.model.Member;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -15,11 +17,16 @@ import static org.hamcrest.Matchers.*;
 @ContextConfiguration(classes = {SimpleredisAppConfig.class})
 public class TestSimpleredisServiceImpl {
 
+    /**
+     * if want declare bean name can set <br><strong>@Qualifier("[bean name]")</strong> <br><br>
+     * or not need declare or unknown bean name can comment
+     */
     @Autowired
-//    @Qualifier("memberService")
+//    @Qualifier("srs")
     public SimpleradisService service;
 
     @Test
+    @Ignore
     public void testSave() {
         assertThat(service, instanceOf(SimpleradisService.class));
 
@@ -33,16 +40,19 @@ public class TestSimpleredisServiceImpl {
     }
 
     @Test
+    @Ignore
     public void testGetMemberByIt() {
         assertThat(service, instanceOf(SimpleradisService.class));
 
         assertThat(service.memberFindById("1528864060947"), notNullValue());
         assertThat(service.memberFindById("1528862904709"), notNullValue());
         assertThat(service.memberFindById("1528863147411"), notNullValue());
+        assertThat(service.memberFindById("test"), notNullValue());
 
     }
 
     @Test
+    @Ignore
     public void testExist() {
         assertThat(service.memberExistsById("1528862904709"), is(true));
         assertThat(service.memberExistsById("1528864060947"), is(true));
@@ -51,17 +61,18 @@ public class TestSimpleredisServiceImpl {
     }
 
     @Test
+//    @Ignore
     public void testLoadSave() {
 
         long startTM = System.currentTimeMillis();
 
         Member member = new Member();
         long currentTM;
-        int maxload = 10000;
+        int maxload = 200000;
         for(int loopi=0 ; loopi<=maxload ; loopi++) {
 
             currentTM = System.currentTimeMillis();
-            member.setId(currentTM);
+            member.setId(Long.parseLong(currentTM + "" + loopi));
             member.setFirstName(String.valueOf(currentTM).concat("JTestF"+loopi));
             member.setLastName(String.valueOf(currentTM).concat("JTestL"+loopi));
             member = service.memberSave(member);

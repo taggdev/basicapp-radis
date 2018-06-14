@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
-@Service("memberService")
+//@Service("memberService")
 public class SimpleredisServiceImpl implements SimpleradisService {
 
     @Autowired

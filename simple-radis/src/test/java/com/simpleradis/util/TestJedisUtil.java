@@ -82,9 +82,12 @@ public class TestJedisUtil {
             jedis.hset("test:hashes:user#1", "name", "Peter");
             jedis.hset("test:hashes:user#1", "job", "politician");
 
+            jedis.hset("test:hashes:user#2", "name", "Steave");
+            jedis.hset("test:hashes:user#2", "job", "police");
+
             String name = jedis.hget("test:hashes:user#1", "name");
             System.out.println("===>name : " + name);
-            name = jedis.hget("test:user#1", "job");
+            name = jedis.hget("test:hashes:user#1", "job");
             System.out.println("===>job : " + name);
 
             Map<String, String> fields = jedis.hgetAll("test:hashes:user#1");
