@@ -43,10 +43,10 @@ public class TestJedisUtil {
         try {
             Jedis jedis = jedisUtil.getClient();
 
-            jedis.lpush("test:queue#tasks", "firstTask");
-            jedis.lpush("test:queue#tasks", "secondTask");
+            jedis.lpush("test:list:queue#tasks", "firstTask");
+            jedis.lpush("test:list:queue#tasks", "secondTask");
 
-            String task = jedis.rpop("queue#tasks");
+            String task = jedis.rpop("test:list:queue#tasks");
             System.out.println("===>task : " + task);
         } catch (Exception e) {
             e.printStackTrace();
@@ -58,16 +58,16 @@ public class TestJedisUtil {
         try {
             Jedis jedis = jedisUtil.getClient();
 
-            jedis.sadd("nicknames", "nickname#1");
-            jedis.sadd("nicknames", "nickname#2");
-            jedis.sadd("nicknames", "nickname#1");
+            jedis.sadd("test:sets:nicknames", "nickname#1");
+            jedis.sadd("test:sets:nicknames", "nickname#2");
+            jedis.sadd("test:sets:nicknames", "nickname#1");
 
-            Set<String> nicknames = jedis.smembers("nicknames");
+            Set<String> nicknames = jedis.smembers("test:sets:nicknames");
             for(String rank:nicknames) {
                 System.out.println("\t===> nickname : " + rank);
             }
 
-            boolean exists = jedis.sismember("nicknames", "nickname#1");
+            boolean exists = jedis.sismember("test:sets:nicknames", "nickname#1");
             System.out.println("===>exist : " + exists);
         } catch (Exception e) {
             e.printStackTrace();
@@ -79,15 +79,15 @@ public class TestJedisUtil {
         try {
             Jedis jedis = jedisUtil.getClient();
 
-            jedis.hset("user#1", "name", "Peter");
-            jedis.hset("user#1", "job", "politician");
+            jedis.hset("test:hashes:user#1", "name", "Peter");
+            jedis.hset("test:hashes:user#1", "job", "politician");
 
-            String name = jedis.hget("user#1", "name");
+            String name = jedis.hget("test:hashes:user#1", "name");
             System.out.println("===>name : " + name);
-            name = jedis.hget("user#1", "job");
+            name = jedis.hget("test:user#1", "job");
             System.out.println("===>job : " + name);
 
-            Map<String, String> fields = jedis.hgetAll("user#1");
+            Map<String, String> fields = jedis.hgetAll("test:hashes:user#1");
             for( Map.Entry<String, String> ss:fields.entrySet()) {
                 System.out.println("\t===>key : " + ss.getKey()+" | value : "+ss.getValue());
 
@@ -106,18 +106,18 @@ public class TestJedisUtil {
             Jedis jedis = jedisUtil.getClient();
 
             Map<String, Double> scores = new HashMap<>();
-//
-//            scores.put("PlayerOne", 3000.0);
-//            scores.put("PlayerTwo", 1500.0);
-//            scores.put("PlayerThree", 8200.0);
+
+            scores.put("PlayerOne", 3000.0);
+            scores.put("PlayerTwo", 1500.0);
+            scores.put("PlayerThree", 8200.0);
 
             scores.keySet().forEach(player -> {
-                jedis.zadd("ranking", scores.get(player), player);
+                jedis.zadd("test:sort-set:ranking", scores.get(player), player);
             });
 
-            String player = jedis.zrevrange("ranking", 0, 1).iterator().next();
+            String player = jedis.zrevrange("test:sort-set:ranking", 0, 1).iterator().next();
             System.out.println("===>player : " + player);
-            long rank = jedis.zrevrank("ranking", "PlayerOne");
+            long rank = jedis.zrevrank("test:sort-set:ranking", "PlayerOne");
             System.out.println("===>rank : " + rank);
         } catch (Exception e) {
             e.printStackTrace();
@@ -129,7 +129,7 @@ public class TestJedisUtil {
         try {
             Jedis jedis = jedisUtil.getClient();
 
-            String friendsPrefix = "friends#";
+            String friendsPrefix = "test:transaction:friends#";
             String userOneId = "4352523";
             String userTwoId = "5552321";
 
@@ -152,11 +152,11 @@ public class TestJedisUtil {
             String userTwoId = "4849888";
 
             Pipeline p = jedis.pipelined();
-            p.sadd("searched#" + userOneId, "paris");
-            p.zadd("ranking", 126, userOneId);
-            p.zadd("ranking", 325, userTwoId);
-            Response<Boolean> pipeExists = p.sismember("searched#" + userOneId, "paris");
-            Response<Set<String>> pipeRanking = p.zrange("ranking", 0, -1);
+            p.sadd("test:pipelining:searched#" + userOneId, "paris");
+            p.zadd("test:pipelining:ranking", 126, userOneId);
+            p.zadd("test:pipelining:ranking", 325, userTwoId);
+            Response<Boolean> pipeExists = p.sismember("test:pipelining:searched#" + userOneId, "paris");
+            Response<Set<String>> pipeRanking = p.zrange("test:pipelining:ranking", 0, -1);
             p.sync();
 
             Boolean exists = pipeExists.get();
