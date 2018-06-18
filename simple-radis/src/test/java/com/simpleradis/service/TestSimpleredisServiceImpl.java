@@ -40,7 +40,7 @@ public class TestSimpleredisServiceImpl {
     }
 
     @Test
-    @Ignore
+//    @Ignore
     public void testGetMemberByIt() {
         assertThat(service, instanceOf(SimpleradisService.class));
 
@@ -61,7 +61,7 @@ public class TestSimpleredisServiceImpl {
     }
 
     @Test
-//    @Ignore
+    @Ignore
     public void testLoadSave() {
 
         long startTM = System.currentTimeMillis();

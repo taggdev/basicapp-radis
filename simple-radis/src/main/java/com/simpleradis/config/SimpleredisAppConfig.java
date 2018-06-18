@@ -12,7 +12,7 @@ import org.springframework.core.env.Environment;
 @ComponentScan(basePackages = {"com.simpleradis"})
 public class SimpleredisAppConfig {
 
-    @Bean("simpleradisService")
+    @Bean //("simpleradisService")
     public SimpleradisService simpleradisService() {
         return new SimpleredisServiceImpl();
     }
