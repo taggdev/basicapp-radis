@@ -61,14 +61,14 @@ public class TestSimpleredisServiceImpl {
     }
 
     @Test
-    @Ignore
+//    @Ignore
     public void testLoadSave() {
 
         long startTM = System.currentTimeMillis();
 
         Member member = new Member();
         long currentTM;
-        int maxload = 200000;
+        int maxload = 100000;
         for(int loopi=0 ; loopi<=maxload ; loopi++) {
 
             currentTM = System.currentTimeMillis();
