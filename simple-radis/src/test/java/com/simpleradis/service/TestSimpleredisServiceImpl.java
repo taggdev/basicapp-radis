@@ -1,12 +1,11 @@
 package com.simpleradis.service;
 
-import com.simpleradis.config.SimpleredisAppConfig;
+import com.simpleradis.SimpleredisAppConfig;
 import com.simpleradis.model.Member;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 

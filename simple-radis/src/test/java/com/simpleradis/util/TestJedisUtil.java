@@ -1,6 +1,6 @@
 package com.simpleradis.util;
 
-import com.simpleradis.config.SimpleredisAppConfig;
+import com.simpleradis.SimpleredisAppConfig;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
